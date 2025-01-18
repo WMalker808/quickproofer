@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quick proofer</title>
+</head>
+<body>
+    <h1>Quick proofer</h1>
+    
+    <form method="POST">
+        <h2>Paste your input text here:</h2>
+        <textarea name="raw_text" rows="10" cols="50">{{ input_text if input_text else '' }}</textarea>
+        <br><br>
+        <input type="submit" value="Proof me">
+    </form>
+
+    {% if error %}
+    <p>Error: {{ error }}</p>
+    {% endif %}
+
+    {% if output_text %}
+    <h2>Output:</h2>
+    <div>{{ output_text | safe }}</div>
+    {% endif %}
+</body>
+</html>
