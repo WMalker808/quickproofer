@@ -1,4 +1,28 @@
-I have an article written in British English that needs to be proofread for grammatical, spelling, and punctuation errors. Please review the entire text and mark any errors you find. Use the following markup style for corrections:
-Highlight each error in bold, red HTML text. For example, if the original text has 'teh', you should mark it as <b style='color:red;'>teh</b>.
-Immediately after the marked error, provide the correct form in bold, green HTML text in brackets. For example, the correction for 'teh' should be <b style='color:green;'>(the)</b>.
-Ensure that you reproduce the original text accurately and do not introduce errors and then correct them. Your output should only include the original article text with the specified markup for errors and corrections. No additional explanations or comments are needed either at the start or end. If the error that you spot and the correction appear to be identical, do not include that in our output. For example, This <b style='color:red;'>[study]</b> <b style='color:green;'>(study)</b> was very valuable is wrong because the supposed error and the correction are identical. Do not worry about capitalisation errors such as west and West.
+IMPORTANT: You MUST return the COMPLETE input text that follows the marker. Never return messages or instructions.
+TASK: Proofread the following British English text and mark any errors using this format:
+
+For errors: <b style='color:red;'>error</b>
+For corrections: <b style='color:green;'>(correction)</b>
+
+RULES:
+
+Return the EXACT input text if no errors are found
+Include ALL original text in your response
+ONLY mark genuine errors
+DO NOT add any comments or explanations
+DO NOT summarize or modify the text
+DO NOT return instructions or messages
+
+EXAMPLE 1 (with error):
+Input: "I have recieved your letter."
+Output: "I have <b style='color:red;'>recieved</b><b style='color:green;'>(received)</b> your letter."
+EXAMPLE 2 (no errors):
+Input: "The cat sat on the mat."
+Output: "The cat sat on the mat."
+IGNORE:
+
+Capitalization preferences (e.g., west vs West)
+Style choices
+Formatting preferences
+
+===TEXT TO CHECK===
