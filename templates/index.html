@@ -10,6 +10,9 @@
         <h2>Paste your input text here:</h2>
         <textarea name="raw_text" rows="10" cols="50">{{ input_text if input_text else '' }}</textarea>
         <br><br>
+        <h2>Or enter a Guardian URL:</h2>
+        <input type="text" name="guardian_url" size="50" value="{{ guardian_url if guardian_url else '' }}">
+        <br><br>
         <input type="submit" value="Proof me">
     </form>
 
