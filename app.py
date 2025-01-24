@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import openai
 import os
 import re
+import trafilatura
+from trafilatura.settings import use_config
 
 # Load environment variables
 load_dotenv()
@@ -44,13 +46,46 @@ def validate_response(output, raw_text):
     
     return True
 
+def extract_guardian_text(url):
+    """Extract text content from Guardian URL using trafilatura"""
+    if not url.startswith('https://www.theguardian.com/'):
+        raise ValueError("URL must be from The Guardian (theguardian.com)")
+    
+    config = use_config()
+    config.set("DEFAULT", "CLEANING", "strip")
+    
+    downloaded = trafilatura.fetch_url(url)
+    if not downloaded:
+        raise ValueError("Failed to download the article")
+    
+    text = trafilatura.extract(downloaded, config=config, include_formatting=True)
+    if not text:
+        raise ValueError("Failed to extract text from the article")
+    
+    # Convert double line breaks to paragraphs while preserving other formatting
+    text = re.sub(r'\n\s*\n', '\n\n', text)
+    text = text.replace('\n\n', '</p><p>')
+    text = '<p>' + text + '</p>'
+    text = text.replace('<p></p>', '')
+    
+    return text
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if request.method == 'POST':
         raw_text = request.form.get('raw_text', '').strip()
+        guardian_url = request.form.get('guardian_url', '').strip()
         
-        if not raw_text:
-            return render_template('index.html', error="No text provided")
+        if not raw_text and not guardian_url:
+            return render_template('index.html', error="No text or URL provided")
+            
+        if guardian_url:
+            try:
+                raw_text = extract_guardian_text(guardian_url)
+            except Exception as e:
+                return render_template('index.html', 
+                                    guardian_url=guardian_url,
+                                    error=f"Error extracting article: {str(e)}")
         
         try:
             try:
@@ -80,15 +115,16 @@ def home():
             
             validate_response(output, raw_text)
             
-            output = re.sub(r'\n\n', r'<p>', output)
-            
             try:
                 with open('output.html', 'w') as file:
                     file.write(output)
             except Exception as e:
                 raise
                 
-            return render_template('index.html', input_text=raw_text, output_text=output)
+            return render_template('index.html', 
+                                input_text=raw_text, 
+                                guardian_url=guardian_url,
+                                output_text=output)
             
         except Exception as e:
             return render_template('index.html', error=str(e))
